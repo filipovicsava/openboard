@@ -368,6 +368,8 @@ public final class KeyboardState {
             // Nothing to do here. See {@link #onReleaseKey(int,boolean)}.
         } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             onPressSymbol(autoCapsFlags, recapitalizeMode);
+        } else if (code == Constants.CODE_SWITCH_ALPHA_SEARCH) {
+            onPressSearch(autoCapsFlags, recapitalizeMode);
         } else {
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
@@ -403,6 +405,8 @@ public final class KeyboardState {
             setShiftLocked(!mAlphabetShiftState.isShiftLocked());
         } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             onReleaseSymbol(withSliding, autoCapsFlags, recapitalizeMode);
+        } else if (code == Constants.CODE_SWITCH_ALPHA_SEARCH) {
+            onReleaseSearch(withSliding, autoCapsFlags, recapitalizeMode);
         }
     }
 
@@ -411,6 +415,10 @@ public final class KeyboardState {
         toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
         mSymbolKeyState.onPress();
         mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL;
+    }
+
+    private void onPressSearch(int autoCapsFlags, int recapitalizeMode) {
+        System.out.println("pressed");
     }
 
     private void onReleaseSymbol(final boolean withSliding, final int autoCapsFlags,
@@ -426,6 +434,10 @@ public final class KeyboardState {
             mPrevSymbolsKeyboardWasShifted = false;
         }
         mSymbolKeyState.onRelease();
+    }
+
+    private void onReleaseSearch(boolean withSliding, int autoCapsFlags, int recapitalizeMode) {
+        System.out.println("released");
     }
 
     public void onUpdateShiftState(final int autoCapsFlags, final int recapitalizeMode) {
