@@ -234,6 +234,7 @@ public final class Constants {
     public static final int CODE_SHIFT = -1;
     public static final int CODE_CAPSLOCK = -2;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -3;
+    public static final int CODE_SWITCH_ALPHA_SEARCH = -16;
     public static final int CODE_OUTPUT_TEXT = -4;
     public static final int CODE_DELETE = -5;
     public static final int CODE_SETTINGS = -6;
@@ -258,6 +259,7 @@ public final class Constants {
         case CODE_SHIFT: return "shift";
         case CODE_CAPSLOCK: return "capslock";
         case CODE_SWITCH_ALPHA_SYMBOL: return "symbol";
+        case CODE_SWITCH_ALPHA_SEARCH: return "search";
         case CODE_OUTPUT_TEXT: return "text";
         case CODE_DELETE: return "delete";
         case CODE_SETTINGS: return "settings";

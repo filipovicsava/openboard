@@ -43,6 +43,7 @@ import javax.annotation.Nullable;
 import static org.dslul.openboard.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
 import static org.dslul.openboard.inputmethod.latin.common.Constants.CODE_OUTPUT_TEXT;
 import static org.dslul.openboard.inputmethod.latin.common.Constants.CODE_SHIFT;
+import static org.dslul.openboard.inputmethod.latin.common.Constants.CODE_SWITCH_ALPHA_SEARCH;
 import static org.dslul.openboard.inputmethod.latin.common.Constants.CODE_SWITCH_ALPHA_SYMBOL;
 import static org.dslul.openboard.inputmethod.latin.common.Constants.CODE_UNSPECIFIED;
 
@@ -607,7 +608,7 @@ public class Key implements Comparable<Key> {
     }
 
     public final boolean isModifier() {
-        return mCode == CODE_SHIFT || mCode == CODE_SWITCH_ALPHA_SYMBOL;
+        return mCode == CODE_SHIFT || mCode == CODE_SWITCH_ALPHA_SYMBOL || mCode == CODE_SWITCH_ALPHA_SEARCH;
     }
 
     public final boolean isRepeatable() {

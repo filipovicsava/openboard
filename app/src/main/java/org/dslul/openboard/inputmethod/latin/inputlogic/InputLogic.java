@@ -668,6 +668,10 @@ public final class InputLogic {
                 // Note: Calling back to the keyboard on symbol key is handled in
                 // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
                 break;
+            case Constants.CODE_SWITCH_ALPHA_SEARCH:
+                // Note: Calling back to the keyboard on symbol key is handled in
+                // {@link #onPressKey(int,int,boolean)} and {@link #onReleaseKey(int,boolean)}.
+                break;
             case Constants.CODE_SETTINGS:
                 onSettingsKeyPressed();
                 break;

@@ -148,6 +148,10 @@
         latin:keySpec="!text/keylabel_to_symbol|!code/key_switch_alpha_symbol"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
+        latin:styleName="toSearchKeyStyle"
+        latin:keySpec="G|!code/key_switch_alpha_search"
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
+    <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:keySpec="!text/keylabel_to_alpha|!code/key_switch_alpha_symbol"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
