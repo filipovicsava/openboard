@@ -16,11 +16,15 @@
 
 package org.dslul.openboard.inputmethod.keyboard.internal;
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
 import org.dslul.openboard.inputmethod.event.Event;
+import org.dslul.openboard.inputmethod.keyboard.MainKeyboardView;
 import org.dslul.openboard.inputmethod.latin.common.Constants;
+import org.dslul.openboard.inputmethod.latin.settings.SettingsActivity;
 import org.dslul.openboard.inputmethod.latin.utils.CapsModeUtils;
 import org.dslul.openboard.inputmethod.latin.utils.RecapitalizeStatus;
 
@@ -92,6 +96,7 @@ public final class KeyboardState {
     private boolean mPrevMainKeyboardWasShiftLocked;
     private boolean mPrevSymbolsKeyboardWasShifted;
     private int mRecapitalizeMode;
+    private Context mContext;
 
     // For handling double tap.
     private boolean mIsInAlphabetUnshiftedFromShifted;
@@ -425,6 +430,9 @@ public final class KeyboardState {
         System.out.println("pressed");
         //toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
         mSearchKeyState.onPress();
+        Intent newIntent = new Intent(mContext, SettingsActivity.class);
+        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(newIntent);
         mSwitchState = SWITCH_STATE_MOMENTARY_SEARCH;
     }
 
@@ -740,4 +748,9 @@ public final class KeyboardState {
         return this + " autoCapsFlags=" + CapsModeUtils.flagsToString(autoCapsFlags)
                 + " recapitalizeMode=" + RecapitalizeStatus.modeToString(recapitalizeMode);
     }
+
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
 }
