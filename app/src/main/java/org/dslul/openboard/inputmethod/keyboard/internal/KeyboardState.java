@@ -69,6 +69,7 @@ public final class KeyboardState {
 
     private ShiftKeyState mShiftKeyState = new ShiftKeyState("Shift");
     private ModifierKeyState mSymbolKeyState = new ModifierKeyState("Symbol");
+    private ModifierKeyState mSearchKeyState = new ModifierKeyState("Search");
 
     // TODO: Merge {@link #mSwitchState}, {@link #mIsAlphabetMode}, {@link #mAlphabetShiftState},
     // {@link #mIsSymbolShifted}, {@link #mPrevMainKeyboardWasShiftLocked}, and
@@ -77,6 +78,7 @@ public final class KeyboardState {
     private static final int SWITCH_STATE_SYMBOL_BEGIN = 1;
     private static final int SWITCH_STATE_SYMBOL = 2;
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL = 3;
+    private static final int SWITCH_STATE_MOMENTARY_SEARCH = 6;
     private static final int SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE = 4;
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_SHIFT = 5;
     private int mSwitchState = SWITCH_STATE_ALPHA;
@@ -135,6 +137,7 @@ public final class KeyboardState {
         mPrevSymbolsKeyboardWasShifted = false;
         mShiftKeyState.onRelease();
         mSymbolKeyState.onRelease();
+        mSearchKeyState.onRelease();
         if (mSavedKeyboardState.mIsValid) {
             onRestoreKeyboardState(autoCapsFlags, recapitalizeMode);
             mSavedKeyboardState.mIsValid = false;
@@ -373,6 +376,7 @@ public final class KeyboardState {
         } else {
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
+            mSearchKeyState.onOtherKeyPressed();
             // It is required to reset the auto caps state when all of the following conditions
             // are met:
             // 1) two or more fingers are in action
@@ -419,6 +423,9 @@ public final class KeyboardState {
 
     private void onPressSearch(int autoCapsFlags, int recapitalizeMode) {
         System.out.println("pressed");
+        //toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
+        mSearchKeyState.onPress();
+        mSwitchState = SWITCH_STATE_MOMENTARY_SEARCH;
     }
 
     private void onReleaseSymbol(final boolean withSliding, final int autoCapsFlags,
@@ -437,7 +444,19 @@ public final class KeyboardState {
     }
 
     private void onReleaseSearch(boolean withSliding, int autoCapsFlags, int recapitalizeMode) {
-        System.out.println("released");
+        if (mSearchKeyState.isChording()) {
+            // Switch back to the previous keyboard mode if the user chords the mode change key and
+            // another key, then releases the mode change key.
+            System.out.println("released");
+            //toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
+        } else if (!withSliding) {
+            // If the mode change key is being released without sliding, we should forget the
+            // previous symbols keyboard shift state and simply switch back to symbols layout
+            // (never symbols shifted) next time the mode gets changed to symbols layout.
+            mPrevSymbolsKeyboardWasShifted = false;
+            System.out.println("released2");
+        }
+        mSearchKeyState.onRelease();
     }
 
     public void onUpdateShiftState(final int autoCapsFlags, final int recapitalizeMode) {
@@ -713,6 +732,7 @@ public final class KeyboardState {
                 : (mIsSymbolShifted ? "SYMBOLS_SHIFTED" : "SYMBOLS"))
                 + " shift=" + mShiftKeyState
                 + " symbol=" + mSymbolKeyState
+                + " search=" + mSearchKeyState
                 + " switch=" + switchStateToString(mSwitchState) + "]";
     }
 
