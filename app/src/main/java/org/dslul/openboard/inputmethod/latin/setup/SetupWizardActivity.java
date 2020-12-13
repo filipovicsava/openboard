@@ -189,6 +189,10 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         });
         mSetupStepGroup.addStep(step3);
 
+        Intent myIntent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+        myIntent.setData(Uri.parse("package:" + getPackageName()));
+        startActivityForResult(myIntent, 1234);
+
         mWelcomeVideoUri = new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
                 .authority(getPackageName())

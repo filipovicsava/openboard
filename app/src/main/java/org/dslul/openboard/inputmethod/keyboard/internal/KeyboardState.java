@@ -17,14 +17,19 @@
 package org.dslul.openboard.inputmethod.keyboard.internal;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import org.dslul.openboard.inputmethod.event.Event;
 import org.dslul.openboard.inputmethod.keyboard.MainKeyboardView;
+import org.dslul.openboard.inputmethod.latin.R;
 import org.dslul.openboard.inputmethod.latin.common.Constants;
-import org.dslul.openboard.inputmethod.latin.settings.SettingsActivity;
 import org.dslul.openboard.inputmethod.latin.utils.CapsModeUtils;
 import org.dslul.openboard.inputmethod.latin.utils.RecapitalizeStatus;
 
@@ -44,6 +49,7 @@ public final class KeyboardState {
     private static final String TAG = KeyboardState.class.getSimpleName();
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_INTERNAL_ACTION = false;
+    private boolean viewIsOpen = false;
 
     public interface SwitchActions {
         boolean DEBUG_ACTION = false;
@@ -96,7 +102,7 @@ public final class KeyboardState {
     private boolean mPrevMainKeyboardWasShiftLocked;
     private boolean mPrevSymbolsKeyboardWasShifted;
     private int mRecapitalizeMode;
-    private Context mContext;
+    private MainKeyboardView mMainKeyboardView;
 
     // For handling double tap.
     private boolean mIsInAlphabetUnshiftedFromShifted;
@@ -428,12 +434,41 @@ public final class KeyboardState {
 
     private void onPressSearch(int autoCapsFlags, int recapitalizeMode) {
         System.out.println("pressed");
-        //toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
-        mSearchKeyState.onPress();
-        Intent newIntent = new Intent(mContext, SettingsActivity.class);
-        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(newIntent);
-        mSwitchState = SWITCH_STATE_MOMENTARY_SEARCH;
+        WindowManager windowManager = (WindowManager) mMainKeyboardView.getContext().getSystemService(Context.WINDOW_SERVICE);
+        if (!viewIsOpen) {
+            //toggleAlphabetAndSymbols(autoCapsFlags, recapitalizeMode);
+            mSearchKeyState.onPress();
+//        Intent newIntent = new Intent(mContext, SettingsActivity.class);
+//        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        mContext.startActivity(newIntent);
+
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+            }
+            layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+            layoutParams.x = 0;
+            layoutParams.y = 0;
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+            View window = LayoutInflater.from(mMainKeyboardView.getContext()).inflate(R.layout.search_view_overlay, null, false);
+//        window.findViewById(R.id.left).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(mContext, "Click Lock", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+            windowManager.addView(window, layoutParams);
+
+            mSwitchState = SWITCH_STATE_MOMENTARY_SEARCH;
+
+            viewIsOpen = true;
+        } else {
+            windowManager.removeView(mMainKeyboardView.findViewByIdExternal(R.layout.search_view_overlay));
+            viewIsOpen = false;
+        }
     }
 
     private void onReleaseSymbol(final boolean withSliding, final int autoCapsFlags,
@@ -749,8 +784,8 @@ public final class KeyboardState {
                 + " recapitalizeMode=" + RecapitalizeStatus.modeToString(recapitalizeMode);
     }
 
-    public void setContext(Context context) {
-        mContext = context;
+    public void setKeyboarView(MainKeyboardView mainKeyboardView) {
+        mMainKeyboardView = mainKeyboardView;
     }
 
 }
